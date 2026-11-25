@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water Refilling Station System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-view="dashboard">
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="jug" viewBox="0 0 24 24"><path d="M9 2h6v3l3 4v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9l3-4z"/></symbol>
+  </svg>
+
+  <aside class="sidebar">
+    <div class="brand"><span class="drop" aria-hidden="true"></span><div><strong>Refill Natin</strong><small id="stationName"></small></div></div>
+    <nav class="nav" aria-label="Main">
+      <button data-nav="dashboard" class="active">Dashboard</button>
+      <button data-nav="customers">Customers</button>
+      <button data-nav="deliveries">Deliveries</button>
+    </nav>
+    <button id="openPrices" class="side-btn" type="button">Prices and station</button>
+  </aside>
+
+  <main class="main">
+    <header class="page-head">
+      <div><h1 id="pageTitle">Dashboard</h1><p id="pageDate"></p></div>
+      <div class="head-actions">
+        <button id="newPayment" class="btn" type="button">Receive payment</button>
+        <button id="newDelivery" class="btn primary" type="button">New delivery</button>
+      </div>
+    </header>
+
+    <section id="view-dashboard" class="view">
+      <div class="kpis">
+        <article class="kpi"><span>Sales today</span><strong id="kSales"></strong><small id="kSalesNote"></small></article>
+        <article class="kpi"><span>Collected today</span><strong id="kCollected"></strong><small>Cash and utang payments</small></article>
+        <article class="kpi kpi-alert"><span>Total utang</span><strong id="kUtang"></strong><small id="kUtangNote"></small></article>
+        <article class="kpi"><span>Containers out</span><strong id="kContainers"></strong><small id="kContainersNote"></small></article>
+      </div>
+      <div class="grid">
+        <article class="card"><h2>Gallons delivered, last 7 days</h2><div id="bars" class="bars"></div></article>
+        <article class="card"><h2>Needs collection</h2><ul id="topUtang" class="list"></ul></article>
+        <article class="card"><h2>Containers to retrieve</h2><ul id="topContainers" class="list"></ul></article>
+        <article class="card"><h2>Recent deliveries</h2><ul id="recent" class="list"></ul></article>
+      </div>
+    </section>
+
+    <section id="view-customers" class="view">
+      <div class="toolbar">
+        <input id="customerSearch" type="search" placeholder="Search name or area">
+        <select id="customerFilter" aria-label="Filter">
+          <option value="all">All customers</option>
+          <option value="utang">With utang</option>
+          <option value="containers">With containers</option>
+        </select>
+        <button id="exportCsv" class="btn" type="button">Export CSV</button>
+        <button id="newCustomer" class="btn primary" type="button">Add customer</button>
+      </div>
+      <div class="table-card"><table><thead><tr><th>Customer</th><th>Containers on hand</th><th class="num">Balance</th><th>Oldest unpaid</th><th></th></tr></thead><tbody id="customerRows"></tbody></table><p id="customerEmpty" class="empty" hidden>No customers match.</p></div>
+    </section>
+
+    <section id="view-deliveries" class="view">
+      <div class="toolbar">
+        <input id="deliverySearch" type="search" placeholder="Search customer">
+        <button id="newDelivery2" class="btn primary" type="button">New delivery</button>
+      </div>
+      <div class="table-card"><table><thead><tr><th>Date</th><th>Customer</th><th class="num">Gallons</th><th class="num">Empties back</th><th class="num">Total</th><th class="num">Paid</th><th class="num">Utang</th><th></th></tr></thead><tbody id="deliveryRows"></tbody></table><p id="deliveryEmpty" class="empty" hidden>No deliveries yet.</p></div>
+    </section>
+  </main>
+
+  <dialog id="customerDialog"><form id="customerForm" method="dialog">
+    <h2 id="customerTitle">Add customer</h2><input type="hidden" id="customerId">
+    <label>Full name<input id="customerName" required maxlength="40"></label>
+    <label>Phone<input id="customerPhone" type="tel" maxlength="20"></label>
+    <label>Address or area<input id="customerArea" maxlength="50"></label>
+    <div class="actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save</button></div>
+  </form></dialog>
+
+  <dialog id="deliveryDialog"><form id="deliveryForm" method="dialog">
+    <h2 id="deliveryTitle">New delivery</h2><input type="hidden" id="deliveryId">
+    <label>Customer<select id="deliveryCustomer" required></select></label>
+    <label>Date and time<input id="deliveryDate" type="datetime-local" required></label>
+    <div class="two">
+      <label>Gallons delivered<input id="deliveryQty" type="number" min="1" step="1" required></label>
+      <label>Price per gallon<input id="deliveryPrice" type="number" min="1" step="1" required></label>
+    </div>
+    <div class="two">
+      <label>Empties collected<input id="deliveryBack" type="number" min="0" step="1" value="0" required></label>
+      <label>Paid now<input id="deliveryPaid" type="number" min="0" step="1" value="0" required></label>
+    </div>
+    <p id="deliveryHint" class="hint"></p>
+    <div class="actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save delivery</button></div>
+  </form></dialog>
+
+  <dialog id="paymentDialog"><form id="paymentForm" method="dialog">
+    <h2>Receive payment</h2>
+    <label>Customer<select id="paymentCustomer" required></select></label>
+    <label>Amount<input id="paymentAmount" type="number" min="1" step="1" required></label>
+    <p id="paymentHint" class="hint"></p>
+    <div class="actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Record payment</button></div>
+  </form></dialog>
+
+  <dialog id="pricesDialog"><form id="pricesForm" method="dialog">
+    <h2>Prices and station</h2>
+    <label>Station name<input id="stationInput" required maxlength="30"></label>
+    <label>Default price per gallon<input id="priceInput" type="number" min="1" step="1" required></label>
+    <div class="actions"><button type="button" class="btn" data-close>Cancel</button><button class="btn primary">Save</button></div>
+  </form></dialog>
+
+  <div id="toast" class="toast" role="status" hidden><span id="toastMessage"></span><button id="toastUndo" type="button">Undo</button></div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
