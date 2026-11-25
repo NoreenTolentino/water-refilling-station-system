@@ -18,15 +18,3 @@ A management system for a water refilling station, built with HTML, CSS, and Jav
 ## Run locally
 
 The app uses ES modules, so serve the folder with a static server such as the VS Code Live Server extension.
-
-## Project structure
-
-```
-water-refilling-system/
-├── index.html
-├── css/style.css
-└── js/
-    ├── app.js
-    ├── render.js
-    └── store.js
-```
