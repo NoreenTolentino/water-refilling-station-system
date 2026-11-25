@@ -2,7 +2,8 @@
 
 A management system for a water refilling station, built with HTML, CSS, and JavaScript. Track customers, gallon deliveries, borrowed containers, and utang in one place.
 
-**Live Site:**
+**Live Site:**  https://noreentolentino.github.io/water-refilling-system/
+Last deployed by @NoreenTolentino NoreenTolentino 1 minute ago
 
 ## Features
 
