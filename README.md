@@ -2,7 +2,7 @@
 
 A management system for a water refilling station, built with HTML, CSS, and JavaScript. Track customers, gallon deliveries, borrowed containers, and utang in one place.
 
-**Live preview:**
+**Live Site:**
 
 ## Features
 
